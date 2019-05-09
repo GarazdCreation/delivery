@@ -12,7 +12,6 @@
         Integration with the Nova Poshta delivery service.
     """,
     'description': """
-
 Nova Poshta Delivery: Synchronization of base catalogs.
 Синхронізація основних каталогів зі службою доставки "Нова Пошта".
 Синхронизация основных справочников со службой доставки "Новая Почта".
