@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class NovaPoshtaSettlement(models.Model):
     _name = "nova.poshta.settlement"
+    _description = 'Nova Poshta Settlements'
 
     ref = fields.Char('Ref')
     name = fields.Char('Name')

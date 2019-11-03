@@ -53,11 +53,27 @@
         <field name="model">nova.poshta.settlement</field>
         <field name="arch" type="xml">
             <tree edit="false" create="false">
+                <field name="index_1"/>
+                <field name="index_2"/>
                 <field name="name"/>
                 <field name="area_id"/>
                 <field name="type"/>
                 <field name="write_date" string="Updated"/>
             </tree>
+        </field>
+    </record>
+
+    <record id="nova_poshta_settlement_view_search" model="ir.ui.view">
+        <field name="name">nova.poshta.settlement.view.search</field>
+        <field name="model">nova.poshta.settlement</field>
+        <field name="arch" type="xml">
+            <search string="Search Settlements">
+                <field name="name" string="Name"
+                       filter_domain="['|',('name','ilike',self),('name_ru','ilike',self)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_region" string="Region" domain="[]" context="{'group_by':'region_description'}"/>
+                </group>
+            </search>
         </field>
     </record>
 

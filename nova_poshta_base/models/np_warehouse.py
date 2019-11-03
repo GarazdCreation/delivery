@@ -5,6 +5,7 @@ from odoo import api, fields, models, _
 
 class NovaPoshtaWarehouse(models.Model):
     _name = "nova.poshta.warehouse"
+    _description = 'Nova Poshta Warehouses'
 
     ref = fields.Char('Ref')
     name = fields.Char('Name')

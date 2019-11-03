@@ -6,6 +6,7 @@ from odoo.osv import expression
 
 class NovaPoshtaCity(models.Model):
     _name = "nova.poshta.city"
+    _description = 'Nova Poshta Cities'
     _order = "code"
 
     ref = fields.Char('Ref')

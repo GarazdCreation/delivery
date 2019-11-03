@@ -43,10 +43,26 @@
         <field name="model">nova.poshta.warehouse</field>
         <field name="arch" type="xml">
             <tree edit="false" create="false">
-                <field name="city_ref"/>
-                <field name="type"/>
+                <field name="city_description"/>
+                <field name="number"/>
                 <field name="name"/>
+                <field name="write_date" string="Updated"/>
             </tree>
+        </field>
+    </record>
+
+    <record id="nova_poshta_warehouse_view_search" model="ir.ui.view">
+        <field name="name">nova.poshta.warehouse.view.search</field>
+        <field name="model">nova.poshta.warehouse</field>
+        <field name="arch" type="xml">
+            <search string="Search Warehouses">
+                <field name="name" string="Name" filter_domain="['|',('name','ilike',self),('name_ru','ilike',self)]"/>
+                <field name="city_description" string="City" filter_domain="['|',('city_description','ilike',self),('city_description_ru','ilike',self)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_city" string="City" context="{'group_by':'city_description'}"/>
+                </group>
+            </search>
         </field>
     </record>
 

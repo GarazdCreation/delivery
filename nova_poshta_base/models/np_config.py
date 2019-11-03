@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 
 class NovaPoshtaConfig(models.Model):
     _name = "nova.poshta.config"
+    _description = 'Nova Poshta Accounts'
 
     name = fields.Char('Account Name')
     key = fields.Char('API key', required=True)
@@ -20,12 +21,12 @@ class NovaPoshtaConfig(models.Model):
 
     @api.model
     def verify_response(self, response):
-        if response['success'] != True:
+        if response['success'] is not True:
             if isinstance(response['errors'], list):
                 error_text = response['errors'][0]
                 error_code = response['errorCodes'][0]
                 raise Warning('Error during Nova Poshta API connection: {}.\n'
-                              'Code: {}'.format(error_text,error_code))
+                              'Code: {}'.format(error_text, error_code))
             else:
                 _logger.info("<Nova Poshta API> Error "
                              "response: {}".format(response))
@@ -33,7 +34,7 @@ class NovaPoshtaConfig(models.Model):
     @api.multi
     def connect(self, model_name, called_method, method_properties=None):
         """
-        Connect to Nova Poshta API 2.0 by JSON format
+        Connect to the Nova Poshta API 2.0 by JSON format
         """
         for record in self:
             u = urlparse(record.url)
@@ -81,7 +82,6 @@ class NovaPoshtaConfig(models.Model):
                     'ref': line['Ref'],
                     'name': line['Description'],
                     'name_ru': line['DescriptionRu'],
-                    'code': int(line['CityID']),
                     'area': line['Area'],
                     'settlement_type': line['SettlementType'],
                     'delivery_1': bool(line['Delivery1']),
@@ -92,6 +92,8 @@ class NovaPoshtaConfig(models.Model):
                     'delivery_6': bool(line['Delivery6']),
                     'delivery_7': bool(line['Delivery7']),
                 }
+                if line['CityID']:
+                    vals['code'] = int(line['CityID'])
                 if 'SettlementTypeDescription' in line.keys():
                     vals.update({
                         'settlement_type_description': line['SettlementTypeDescription']
@@ -230,7 +232,7 @@ class NovaPoshtaConfig(models.Model):
         - AreasCenter: string[36] - Идентификатор города, который является областным центром
         """
         for record in self:
-            properties = {'Language': 'ru'}
+            # properties = {'Language': 'ru'}
             response = self.connect('Address', 'getAreas')
             self.verify_response(response)
             area_obj = self.env['nova.poshta.area']
@@ -255,9 +257,16 @@ class NovaPoshtaConfig(models.Model):
         _logger.debug(">>> Start of Nova Poshta catalog sync "
                       "for account ID: {}.".format(self.id))
         self.get_areas()
+        self._cr.commit()
+        _logger.debug(">>> Areas are synced.")
         self.get_settlements()
+        self._cr.commit()
+        _logger.debug(">>> Settlements are synced.")
         self.get_cities()
+        self._cr.commit()
+        _logger.debug(">>> Cities are synced.")
         self.get_warehouses()
+        _logger.debug(">>> Warehouses are synced.")
         _logger.debug("<<< End of Nova Poshta catalog sync.")
 
     @api.model
